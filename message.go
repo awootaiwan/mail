@@ -5,6 +5,7 @@ import (
 	"io"
 	"os"
 	"path/filepath"
+	"strings"
 	"time"
 )
 
@@ -106,7 +107,12 @@ func (m *Message) SetBoundary(boundary string) {
 // SetHeader sets a value to the given header field.
 func (m *Message) SetHeader(field string, value ...string) {
 	m.encodeHeader(value)
-	m.header[field] = value
+	nk := strings.Split(field, "|")
+	if nk[0] == "Sender" && m.header[nk[0]] == nil {
+		m.header[nk[0]] = value
+	} else {
+		m.header[field] = value
+	}
 }
 
 func (m *Message) encodeHeader(values []string) {
